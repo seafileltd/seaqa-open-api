@@ -1,0 +1,30 @@
+# This GitHub Actions workflow syncs docs and OpenAPI definitions to ReadMe
+# Documentation: https://docs.readme.com/main/docs/rdme
+name: ReadMe GitHub Action 🦉
+
+on:
+  push:
+    branches:
+      # This workflow will run every time you push code to the following branch
+      # Check out GitHub's docs for more info on configuring this:
+      # https://docs.github.com/actions/using-workflows/events-that-trigger-workflows
+      - master
+
+jobs:
+  rdme-docs:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repo 📚
+        uses: actions/checkout@v4
+          
+      # Seaqa API (docs only) # rdme v10 被移除，无法上传
+      # - name: Update Seaqa API 🚀
+      #   uses: readmeio/rdme@v10
+      #   with:
+      #     rdme: docs upload ./reference --key=${{ secrets.README_API_KEY }} --branch=1.0
+
+      # ticket operations: user
+      - name: Ticket operations 🚀
+        uses: readmeio/rdme@v10
+        with:
+          rdme: openapi upload ./api/ticket_operations.yaml --key=${{ secrets.README_API_KEY }}
