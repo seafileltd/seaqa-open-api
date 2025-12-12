@@ -5,17 +5,17 @@ content:
   excerpt: The HTTP response codes indicate success or error.
 ---
 
-SeaQA uses conventional HTTP response codes to indicate the success or failure of an API request. In general:
+SeaTicket uses conventional HTTP response codes to indicate the success or failure of an API request. In general:
 
 - Codes in the 2xx range indicate success.
 - Codes in the 4xx range indicate an error that failed given information provided (e.g., a required parameter was omitted, a charge failed, etc.). Most 4xx errors include an error code that briefly explains the error reported.
-- Codes in the 5xx range indicate an error with SeaQA's servers (these are rare).
+- Codes in the 5xx range indicate an error with SeaTicket's servers (these are rare).
 
 ## Success codes
 
 | HTTPS status code | Description                                 |
 | :---------------- | :------------------------------------------ |
-| **200 - OK**      | SeaQA successfully processed the request |
+| **200 - OK**      | SeaTicket successfully processed the request |
 
 ## Error codes
 
@@ -27,4 +27,4 @@ SeaQA uses conventional HTTP response codes to indicate the success or failure o
 | **403 - Forbidden**                    | The provided token key doesn&#x27;t have permissions to perform the request.                     |
 | **404 - Not Found**                    | The requested resource doesn&#x27;t exist.                                                       |
 | **429 - Too Many Requests**            | Too many requests hit the API too quickly. We recommend an exponential backoff of your requests. |
-| **500, 502, 503, 504 - Server Errors** | Something went wrong on SeaQA&#x27;s end.                                                     |
+| **500, 502, 503, 504 - Server Errors** | Something went wrong on SeaTicket&#x27;s end.                                                     |

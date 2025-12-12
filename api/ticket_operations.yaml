@@ -1,10 +1,10 @@
 openapi: 3.0.3
 info:
-  title: SeaQA Ticket Operations API
+  title: SeaTicket Operations API
   description: |-
-    SeaQA Ticket Operations API Reference (OpenAPI 3.0).
+    SeaTicket Operations API Reference (OpenAPI 3.0).
     
-    This API allows you to manage tickets, Ticket comment, tags, types, substates, and views in SeaQA projects.
+    This API allows you to manage tickets, ticket comments, tags, types, substates, and views in SeaTicket projects.
   version: '1.0'
 servers:
   - url: https://{server}
@@ -196,9 +196,9 @@ components:
         _creator:
           type: string
           description: Creator username
-        _reply_count:
+        _comment_count:
           type: integer
-          description: Number of replies
+          description: Number of comments
         _created_time:
           type: string
           format: date-time
@@ -309,18 +309,18 @@ components:
                 type: object
                 description: Mapping of parent option IDs to child option IDs
 
-    TicketReply:
+    TicketComment:
       type: object
       properties:
         _pk:
           type: integer
-          description: Primary key of the reply
+          description: Primary key of the comment
         ticket_id:
           type: integer
           description: ID of the parent ticket
         content:
           type: string
-          description: Content of the reply
+          description: Content of the comment
         creator:
           type: string
           description: Creator username
@@ -334,7 +334,7 @@ components:
           description: Last modification timestamp
         deleted:
           type: boolean
-          description: Whether the reply is deleted
+          description: Whether the comment is deleted
 
     TagOption:
       type: object
@@ -1441,8 +1441,8 @@ paths:
       operationId: listTicketComments
       tags:
         - Ticket comments
-      summary: List Ticket comments
-      description: List replies for a specific ticket with pagination.
+      summary: List ticket comments
+      description: List comments for a specific ticket with pagination.
       security:
         - AccountTokenAuth: []
       parameters:
@@ -1461,7 +1461,7 @@ paths:
                   ticket_comments:
                     type: array
                     items:
-                      $ref: '#/components/schemas/TicketReply'
+                      $ref: '#/components/schemas/TicketComment'
               example: {
                   "ticket_comments": [
                       {
@@ -1484,8 +1484,8 @@ paths:
       operationId: createTicketComment
       tags:
         - Ticket comments
-      summary: Create a ticket reply
-      description: Add a reply to a ticket.
+      summary: Create a ticket comment
+      description: Add a comment to a ticket.
       security:
         - AccountTokenAuth: []
       parameters:
@@ -1503,7 +1503,7 @@ paths:
                 content:
                   type: string
                   description: JSON string containing text, images, and links
-                  example: '{"text": "Reply content", "images": [], "links": []}'
+                  example: '{"text": "Comment content", "images": [], "links": []}'
       responses:
         '201':
           description: Created
@@ -1513,7 +1513,7 @@ paths:
                 type: object
                 properties:
                   ticket_comment:
-                    $ref: '#/components/schemas/TicketReply'
+                    $ref: '#/components/schemas/TicketComment'
               example: {
                   "ticket_comment": {
                       "_pk": 1,
@@ -1539,8 +1539,8 @@ paths:
       operationId: updateTicketComment
       tags:
         - Ticket comments
-      summary: Update a ticket reply
-      description: Update an existing ticket reply.
+      summary: Update a ticket comment
+      description: Update an existing ticket comment.
       security:
         - AccountTokenAuth: []
       parameters:
@@ -1568,7 +1568,7 @@ paths:
                 type: object
                 properties:
                   ticket_comment:
-                    $ref: '#/components/schemas/TicketReply'
+                    $ref: '#/components/schemas/TicketComment'
               example: {
                   "ticket_comment": {
                       "_pk": 1,
@@ -1585,7 +1585,7 @@ paths:
         '403':
           description: Permission denied
         '404':
-          description: Reply not found
+          description: comment not found
         '429':
           description: Too many requests - Cannot be updated again within 10 seconds
 
@@ -1593,8 +1593,8 @@ paths:
       operationId: deleteTicketComment
       tags:
         - Ticket comments
-      summary: Delete a ticket reply
-      description: Delete a ticket reply.
+      summary: Delete a ticket comment
+      description: Delete a ticket comment.
       security:
         - AccountTokenAuth: []
       parameters:
@@ -1611,7 +1611,7 @@ paths:
         '403':
           description: Permission denied
         '404':
-          description: Reply not found
+          description: Comment not found
 
   # ==================== Ticket Tags ====================
   /api/v2.1/project/{project_uuid}/ticket/tags/:
