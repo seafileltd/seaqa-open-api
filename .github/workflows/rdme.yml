@@ -21,7 +21,7 @@ jobs:
       - name: authentication 🚀
         uses: readmeio/rdme@v10
         with:
-          rdme: openapi upload ./api/authentication.yaml --key=${{ secrets.README_API_KEY }} --useSpecVersion
+          rdme: openapi upload ./api/authentication.yaml --key=${{ secrets.README_API_KEY }}
 
 
       # ticket operations: user
