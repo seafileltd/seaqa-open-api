@@ -1,0 +1,65 @@
+openapi: 3.0.3
+info:
+  title: authentication
+  description: |-
+    The official SeaTicket API Reference
+  version: '13.0'
+tags:
+  - name: Account-Token
+    description: Access project with Account-Token
+servers:
+  - url: https://{server}
+    variables:
+      server:
+        default: cloud.seaticket.com
+
+components:
+  securitySchemes:
+    AccountTokenAuth:
+      type: http
+      scheme: bearer
+      description: This is the [Account-Token](/reference/authentication).
+      bearerFormat: Account-Token
+
+  schemas:
+    AccountTokenResponse:
+      type: object
+      description: account-token
+      properties:
+        token:
+          type: string
+          example: '25285a3da6fff1f7a6f9c9abc8da12dcd2bd4470'
+          minLength: 40
+          maxLength: 40
+
+paths:
+  /api2/auth-token/:
+    post:
+      summary: Obtain account token
+      tags:
+        - Account-Token
+      description: |
+        Generate an *Account-Token* with your username and password. This Account-Token is necessary for all the following account operations.
+      security: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                  description: email address
+                password:
+                  type: string
+                  description: password
+              required:
+                - username
+                - password
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountTokenResponse'

@@ -17,11 +17,12 @@ jobs:
       - name: Check out repo 📚
         uses: actions/checkout@v4
           
-      # SeaTicket API (docs only) # rdme v10 被移除，无法上传
-      # - name: Update SeaTicket API 🚀
-      #   uses: readmeio/rdme@v10
-      #   with:
-      #     rdme: docs upload ./reference --key=${{ secrets.README_API_KEY }} --branch=1.0
+      # authentication
+      - name: authentication 🚀
+        uses: readmeio/rdme@v10
+        with:
+          rdme: openapi upload ./api/authentication.yaml --key=${{ secrets.README_API_KEY }} --useSpecVersion
+
 
       # ticket operations: user
       - name: Ticket operations 🚀
