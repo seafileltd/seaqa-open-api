@@ -90,6 +90,15 @@ components:
       schema:
         type: string
 
+    knowledge_id:
+      name: knowledge_id
+      in: path
+      description: The unique identifier of a knowledge base record
+      example: 1
+      required: true
+      schema:
+        type: integer
+
     # Query parameters
     view_id_query:
       name: view_id
@@ -497,6 +506,153 @@ components:
         error_msg:
           type: string
           description: Error message
+
+    KnowledgeBaseKeysData:
+      type: object
+      description: Return column key and column value of knowledge base record
+      properties:
+        _pk:
+          type: integer
+          description: Primary key of the knowledge base record
+        _title:
+          type: string
+          description: Title of the knowledge base record
+        _content:
+          type: string
+          description: Content of the knowledge base record
+        _creator:
+          type: string
+          description: Creator username
+        _created_time:
+          type: string
+          format: date-time
+          description: Creation timestamp
+        _modified_time:
+          type: string
+          format: date-time
+          description: Last modification timestamp
+        _last_modifier:
+          type: string
+          description: Last modifier username
+
+    KnowledgeBaseData:
+      type: object
+      description: Return column key and column value of knowledge base record
+      properties:
+        _pk:
+          type: integer
+          description: Primary key of the knowledge base record
+        title:
+          type: string
+          description: Title of the knowledge base record
+        content:
+          type: string
+          description: Content of the knowledge base record
+        creator:
+          type: string
+          description: Creator username
+        created_time:
+          type: string
+          format: date-time
+          description: Creation timestamp
+        modified_time:
+          type: string
+          format: date-time
+          description: Last modification timestamp
+        last_modifier:
+          type: string
+          description: Last modifier username
+    
+    KnowledgeBaseColumns:
+      type: array
+      items:
+        type: object
+        properties:
+          key:
+            type: string
+            description: Column key
+          name:
+            type: string
+            description: Column name
+          type: 
+            type: string
+            description: Column type (text, int64, float64, datetime, etc.)
+          data:
+            type: object
+            nullable: true
+            description: Column data
+
+    KnowledgeBaseView:
+      type: object
+      properties:
+        _id:
+          type: string
+          description: Unique identifier of the view
+        name:
+          type: string
+          description: Name of the view
+        type:
+          type: string
+          description: Type of view (table, etc.)
+          enum:
+            - table
+        basic_filters:
+          type: array
+          items:
+            $ref: '#/components/schemas/ViewFilter'
+          description: Basic filter conditions for state, type, tags
+        filters:
+          type: array
+          items:
+            $ref: '#/components/schemas/ViewFilter'
+          description: Advanced filter conditions
+        sorts:
+          type: array
+          items:
+            $ref: '#/components/schemas/ViewSort'
+          description: Sort conditions
+        groupbys:
+          type: array
+          items:
+            type: object
+          description: Group by conditions
+        filter_conjunction:
+          type: string
+          description: Filter conjunction (And/Or)
+          enum:
+            - And
+            - Or
+        hidden_columns:
+          type: array
+          items:
+            type: string
+          description: Hidden column keys
+        columns_keys:
+          type: array
+          items:
+            type: string
+
+    KnowledgeBaseTagOption:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier of the tag
+        name:
+          type: string
+          description: Name of the tag
+        color:
+          type: string
+          description: Background color
+        text_color:
+          type: string
+          description: Text color
+        description:
+          type: string
+          description: Description of the tag
+        records_count:
+          type: integer
+          description: Number of records with this tag
 
 paths:
   # ==================== Tickets ====================
@@ -3430,3 +3586,1034 @@ paths:
           description: Permission denied
         '404':
           description: View not found
+
+# ==================== Knowledge bases ====================
+  /api/v2.1/project/{project_uuid}/knowledge-bases/:
+    get:
+      operationId: listKnowledgeBases
+      tags:
+        - Knowledge bases
+      summary: List knowledge base records
+      description: List knowledge base records in a project view.
+      security:
+        - AccountTokenAuth: []
+      parameters:
+        - $ref: '#/components/parameters/project_uuid'
+        - $ref: '#/components/parameters/view_id_query'
+        - $ref: '#/components/parameters/start'
+        - $ref: '#/components/parameters/limit'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  records:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/KnowledgeBaseData'
+                  columns:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/KnowledgeBaseColumns'
+              example: {
+                "records": [
+                  {
+                    "_pk": 1,
+                    "IsV6": "test",
+                    "86lo": "test\n",
+                    "m3q9": "a5b3a282e7ea4b8f931e311b04f0fceb@auth.local",
+                    "hIzW": "2025-12-15T10:47:24.124498+08:00",
+                    "7v4P": "a5b3a282e7ea4b8f931e311b04f0fceb@auth.local",
+                    "4r8d": "2025-12-15T10:47:24.124498+08:00"
+                  },
+                  {
+                    "_pk": 2,
+                    "IsV6": "test2",
+                    "86lo": "test2 content\n",
+                    "m3q9": "a5b3a282e7ea4b8f931e311b04f0fceb@auth.local",
+                    "hIzW": "2025-12-15T11:07:29.031285+08:00",
+                    "7v4P": "a5b3a282e7ea4b8f931e311b04f0fceb@auth.local",
+                    "4r8d": "2025-12-15T11:07:29.031285+08:00"
+                  }
+                ],
+                "columns": [
+                  {
+                    "key": "_pk",
+                    "name": "_pk",
+                    "type": "float64",
+                    "data": null
+                  },
+                  {
+                    "key": "IsV6",
+                    "name": "title",
+                    "type": "text",
+                    "data": null
+                  },
+                  {
+                    "key": "86lo",
+                    "name": "content",
+                    "type": "text",
+                    "data": null
+                  },
+                  {
+                    "key": "m3q9",
+                    "name": "creator",
+                    "type": "text",
+                    "data": null
+                  },
+                  {
+                    "key": "hIzW",
+                    "name": "created_time",
+                    "type": "datetime",
+                    "data": null
+                  },
+                  {
+                    "key": "7v4P",
+                    "name": "last_modifier",
+                    "type": "text",
+                    "data": null
+                  },
+                  {
+                    "key": "4r8d",
+                    "name": "modified_time",
+                    "type": "datetime",
+                    "data": null
+                  }
+                ]
+              }
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Permission denied
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Project not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+    post:
+      operationId: createKnowledgeBase
+      tags:
+        - Knowledge bases
+      summary: Create a knowledge base
+      description: Create a new knowledge base in the project.
+      security:
+        - AccountTokenAuth: []
+      parameters:
+        - $ref: '#/components/parameters/project_uuid'
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+                - title
+                - content
+              properties:
+                title:
+                  type: string
+                  description: Title of the knowledge base
+                content:
+                  type: string
+                  description: JSON string containing text
+                  example: '{"text": "Knowledge base content"}'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  row:
+                    $ref: '#/components/schemas/KnowledgeBaseData'
+              example: {
+                "row": {
+                  "title": "Knowledge base",
+                  "content": "Knowledge base content\n",
+                  "creator": "a5b3a282e7ea4b8f931e311b04f0fceb@auth.local",
+                  "created_time": "2025-12-15T03:22:52.408259+00:00",
+                  "last_modifier": "a5b3a282e7ea4b8f931e311b04f0fceb@auth.local",
+                  "modified_time": "2025-12-15T03:22:52.408259+00:00",
+                  "deleted": false,
+                  "_pk": 5
+                }
+              }
+        '400':
+          description: content invalid
+        '403':
+          description: Permission denied
+        '404':
+          description: Project not found
+
+    delete:
+      operationId: batchDeleteKnowledgeBases
+      tags:
+        - Knowledge bases
+      summary: Batch delete knowledge bases
+      description: Delete multiple knowledge bases.
+      security:
+        - AccountTokenAuth: []
+      parameters:
+        - $ref: '#/components/parameters/project_uuid'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - record_ids
+              properties:
+                record_ids:
+                  type: array
+                  items:
+                    type: string
+                  description: List of record IDs to delete
+      responses:
+        '200':
+          description: Successfully deleted record IDs
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+        '400':
+          description: Bad Request
+        '403':
+          description: Permission denied
+        '404':
+          description: Project not found
+
+  /api/v2.1/project/{project_uuid}/knowledge-base/metadata/:
+    get:
+      operationId: getKnowledgeBaseMetadata
+      tags:
+        - Knowledge bases
+      summary: Get knowledge base metadata
+      description: Get metadata for knowledge base select columns.
+      security:
+        - AccountTokenAuth: []
+      parameters:
+        - $ref: '#/components/parameters/project_uuid'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  tags:
+                    type: object
+                    description: Tags column options
+              example: {
+                "tags": {
+                  "options": [
+                    {
+                      "color": "#DAD7FF",
+                      "description": "",
+                      "id": "8M9P",
+                      "name": "abc",
+                      "text_color": "#212529"
+                    },
+                    {
+                      "color": "#FFFCB5",
+                      "description": "tag description",
+                      "id": "v2zm",
+                      "name": "tag name",
+                      "text_color": "#212529"
+                    }
+                  ]
+                }
+              }
+        '403':
+          description: Permission denied
+        '404':
+          description: Project not found
+
+  # ==================== Single Knowledge base ====================
+  /api/v2.1/project/{project_uuid}/knowledge-bases/knowledge_id/:
+    get:
+      operationId: getKnowledgeBase
+      tags:
+        - Knowledge bases
+      summary: Get a knowledge base
+      description: Get detailed information of a specific knowledge base.
+      security:
+        - AccountTokenAuth: []
+      parameters:
+        - $ref: '#/components/parameters/project_uuid'
+        - $ref: '#/components/parameters/knowledge_id'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  record:
+                    $ref: '#/components/schemas/KnowledgeBaseData'
+              example: {
+                "record": {
+                  "_pk": 5,
+                  "title": "new knowledge base record",
+                  "content": "knowledge base content\n",
+                  "tags": null,
+                  "creator": "a5b3a282e7ea4b8f931e311b04f0fceb@auth.local",
+                  "created_time": "2025-12-17T11:31:07.742348+08:00",
+                  "last_modifier": "a5b3a282e7ea4b8f931e311b04f0fceb@auth.local",
+                  "modified_time": "2025-12-17T11:31:07.742348+08:00",
+                  "deleted": false
+                }
+              }
+        '403':
+          description: Permission denied
+        '404':
+          description: Knowledge base record not found
+
+    put:
+      operationId: updateKnowledgeBase
+      tags:
+        - Knowledge bases
+      summary: Update a Knowledge base record
+      description: Update a specific knowledge base record.
+      security:
+        - AccountTokenAuth: []
+      parameters:
+        - $ref: '#/components/parameters/project_uuid'
+        - $ref: '#/components/parameters/knowledge_id'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  description: New title
+                content:
+                  type: string
+                  description: JSON string containing text, images, and links
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+        '400':
+          description: Bad Request
+        '403':
+          description: Permission denied
+        '404':
+          description: Project not found
+
+  # ==================== Knowledge base Views ====================
+  /api/v2.1/project/{project_uuid}/knowledge-base-views/:
+    get:
+      tags:
+        - Knowledge base views
+      summary: List knowledge base views
+      description: List all knowledge base views and navigation structure.
+      security:
+        - AccountTokenAuth: []
+      parameters:
+        - $ref: '#/components/parameters/project_uuid'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  views:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/KnowledgeBaseView'
+                  navigation:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        _id:
+                          type: string
+                        type:
+                          type: string
+                          enum: [view, folder]
+              example: {
+                "views": [
+                  {
+                    "_id": "0000",
+                    "name": "All",
+                    "type": "table",
+                    "basic_filters": [],
+                    "columns_keys": [],
+                    "filter_conjunction": "Or",
+                    "filters": [],
+                    "sorts": [],
+                    "groupbys": [],
+                    "hidden_columns": []
+                  }
+                ],
+                "navigation": [
+                  {
+                    "_id": "0000",
+                    "type": "view"
+                  }
+                ]
+              }
+        '403':
+          description: Permission denied
+        '404':
+          description: Project not found
+
+
+    post:
+      tags:
+        - Knowledge base views
+      summary: Create a knowledge base view
+      description: Create a new knowledge base view.
+      security:
+        - AccountTokenAuth: []
+      parameters:
+        - $ref: '#/components/parameters/project_uuid'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+              properties:
+                name:
+                  type: string
+                  description: View name
+                type:
+                  type: string
+                  description: View type (table, kanban, etc.)
+                  default: table
+                data:
+                  type: object
+                  description: Additional view configuration
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  view:
+                    $ref: '#/components/schemas/KnowledgeBaseView'
+              example: {
+                "view": {
+                  "_id": "pp9u",
+                  "table_id": "0000",
+                  "name": "new view",
+                  "filters": [],
+                  "groupbys": [],
+                  "filter_conjunction": "Or",
+                  "hidden_columns": [],
+                  "type": "table"
+                }
+              }
+        '400':
+          description: Bad Request
+        '403':
+          description: Permission denied
+        '404':
+          description: Project not found
+
+
+  /api/v2.1/project/{project_uuid}/knowledge-base-views/{view_id}/:
+    get:
+      tags:
+        - Knowledge base views
+      summary: Get a knowledge base view
+      description: Get detailed information of a specific knowledge base view.
+      security:
+        - AccountTokenAuth: []
+      parameters:
+        - $ref: '#/components/parameters/project_uuid'
+        - $ref: '#/components/parameters/view_id'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  view:
+                    $ref: '#/components/schemas/KnowledgeBaseView'
+              example: {
+                "view": {
+                  "_id": "0000",
+                  "name": "All",
+                  "type": "table",
+                  "basic_filters": [],
+                  "columns_keys": [],
+                  "filter_conjunction": "Or",
+                  "filters": [],
+                  "sorts": [],
+                  "groupbys": [],
+                  "hidden_columns": []
+                }
+              }
+        '403':
+          description: Permission denied
+        '404':
+          description: View not found
+
+    put:
+      tags:
+        - Knowledge base views
+      summary: Update a knowledge base view
+      description: Update an existing knowledge base view (rename, change filters, etc.).
+      security:
+        - AccountTokenAuth: []
+      parameters:
+        - $ref: '#/components/parameters/project_uuid'
+        - $ref: '#/components/parameters/view_id'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - view_data
+              properties:
+                view_data:
+                  type: object
+                  description: View data to update
+                  properties:
+                    name:
+                      type: string
+                    filters:
+                      type: array
+                      items:
+                        type: object
+                    sorts:
+                      type: array
+                      items:
+                        type: object
+                    groupbys:
+                      type: array
+                      items:
+                        type: object
+                    filter_conjunction:
+                      type: string
+                    hidden_columns:
+                      type: array
+                      items:
+                        type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+        '400':
+          description: Bad Request
+        '403':
+          description: Permission denied
+        '404':
+          description: View not found
+
+
+    delete:
+      tags:
+        - Knowledge base views
+      summary: Delete a knowledge base view
+      description: Delete a specific knowledge base view.
+      security:
+        - AccountTokenAuth: []
+      parameters:
+        - $ref: '#/components/parameters/project_uuid'
+        - $ref: '#/components/parameters/view_id'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+        '400':
+          description: Bad Request
+        '403':
+          description: Permission denied
+        '404':
+          description: View not found
+
+
+  # ==================== Knowledge Base View Operations ====================
+  /api/v2.1/project/{project_uuid}/knowledge-base-move-views/:
+    post:
+      tags:
+        - Knowledge base views
+      summary: Move knowledge base view
+      description: Move a view to another position in the navigation.
+      security:
+        - AccountTokenAuth: []
+      parameters:
+        - $ref: '#/components/parameters/project_uuid'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                source_view_id:
+                  type: string
+                  description: ID of the view to move
+                target_view_id:
+                  type: string
+                  description: Target view ID to move before
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  navigation:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        _id:
+                          type: string
+                        type:
+                          type: string
+              example: {"navigation":[{"_id":"pp9u","type":"view"},{"_id":"0000","type":"view"}]}
+        '400':
+          description: Bad Request
+        '403':
+          description: Permission denied
+        '404':
+          description: View or folder not found
+
+
+  /api/v2.1/project/{project_uuid}/knowledge-base-duplicate-view/:
+    post:
+      tags:
+        - Knowledge base views
+      summary: Duplicate knowledge base view
+      description: Create a copy of an existing knowledge base view.
+      security:
+        - AccountTokenAuth: []
+      parameters:
+        - $ref: '#/components/parameters/project_uuid'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - view_id
+              properties:
+                view_id:
+                  type: string
+                  description: ID of the view to duplicate
+                folder_id:
+                  type: string
+                  description: Target folder ID (optional)
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  view:
+                    $ref: '#/components/schemas/KnowledgeBaseView'
+              example: {
+                "view": {
+                  "_id": "cqnf",
+                  "table_id": "0000",
+                  "name": "new view (1)",
+                  "filters": [],
+                  "groupbys": [],
+                  "filter_conjunction": "Or",
+                  "hidden_columns": [],
+                  "type": "table"
+                }
+              }
+        '400':
+          description: Bad Request
+        '403':
+          description: Permission denied
+        '404':
+          description: View not found
+
+  # ==================== Knowledge base Tags ====================
+  /api/v2.1/project/{project_uuid}/knowledge-base/tags/:
+    get:
+      operationId: listKnowledgeBaseTags
+      tags:
+        - Knowledge base tags
+      summary: List knowledge base tags
+      description: List all knowledge base tags information.
+      security:
+        - AccountTokenAuth: []
+      parameters:
+        - $ref: '#/components/parameters/project_uuid'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  tags:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/KnowledgeBaseTagOption'
+              example: {
+                "tags": [
+                  {
+                    "color": "#DAD7FF",
+                    "description": "",
+                    "id": "8M9P",
+                    "name": "abc",
+                    "text_color": "#212529",
+                    "records_count": 1
+                  }
+                ]
+              }
+        '403':
+          description: Permission denied
+        '404':
+          description: Project not found
+
+    post:
+      operationId: createKnowledgeBaseTag
+      tags:
+        - Knowledge base tags
+      summary: Create a knowledge base tag
+      description: Create a new knowledge base tag.
+      security:
+        - AccountTokenAuth: []
+      parameters:
+        - $ref: '#/components/parameters/project_uuid'
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+                - name
+                - color
+                - text_color
+              properties:
+                name:
+                  type: string
+                  description: Tag name
+                color:
+                  type: string
+                  description: Background color (hex)
+                  example: '#FF5733'
+                text_color:
+                  type: string
+                  description: Text color (hex)
+                  example: '#FFFFFF'
+                description:
+                  type: string
+                  description: Tag description
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  tag:
+                    $ref: '#/components/schemas/KnowledgeBaseTagOption'
+              example: {
+                "tag": {
+                  "id": "v2zm",
+                  "name": "tag name",
+                  "color": "#FFFCB5",
+                  "text_color": "#212529",
+                  "description": "tag description"
+                }
+              }
+        '400':
+          description: Bad Request - tag already exists or invalid parameters
+        '403':
+          description: Permission denied
+        '404':
+          description: Project not found
+
+    delete:
+      tags:
+        - Knowledge base tags
+      summary: Batch delete knowledge base tags
+      description: Delete multiple knowledge base tags.
+      security:
+        - AccountTokenAuth: []
+      parameters:
+        - $ref: '#/components/parameters/project_uuid'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - tag_ids
+              properties:
+                tag_ids:
+                  type: array
+                  items:
+                    type: string
+                  description: List of tag IDs to delete
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+        '400':
+          description: Bad Request
+        '403':
+          description: Permission denied
+        '404':
+          description: Project not found
+
+  /api/v2.1/project/{project_uuid}/ticket/knowledge-base/{tag_id}/:
+    get:
+      tags:
+        - Knowledge base tags
+      summary: Get knowledge base records by tag
+      description: Get all knowledge base records with a specific tag.
+      security:
+        - AccountTokenAuth: []
+      parameters:
+        - $ref: '#/components/parameters/project_uuid'
+        - $ref: '#/components/parameters/tag_id'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  records:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/KnowledgeBaseData'
+                  columns:
+                    type: array
+                    items:
+                      type: object
+              example: {
+                "records": [
+                  {
+                    "_pk": 5,
+                    "xtdu": "new knowledge base record",
+                    "0Ev8": "knowledge base content\n",
+                    "aYRZ": [
+                      "8M9P"
+                    ],
+                    "9QtB": "a5b3a282e7ea4b8f931e311b04f0fceb@auth.local",
+                    "ZeHE": "2025-12-17T11:31:07.742348+08:00",
+                    "tMY2": "a5b3a282e7ea4b8f931e311b04f0fceb@auth.local",
+                    "S927": "2025-12-17T14:30:40.48247+08:00"
+                  }
+                ],
+                "columns": [
+                  {
+                    "id": "_pk",
+                    "key": "_pk",
+                    "name": "_pk",
+                    "type": "float64",
+                    "data": null,
+                    "table_id": "JCtm",
+                    "table_name": "knowledge_base",
+                    "base_id": "86c87bae-5449-4748-9e91-5256f99ed66b"
+                  },
+                  {
+                    "id": "xtdu",
+                    "key": "xtdu",
+                    "name": "title",
+                    "type": "text",
+                    "data": null,
+                    "table_id": "JCtm",
+                    "table_name": "knowledge_base",
+                    "base_id": "86c87bae-5449-4748-9e91-5256f99ed66b"
+                  },
+                  {
+                    "id": "0Ev8",
+                    "key": "0Ev8",
+                    "name": "content",
+                    "type": "text",
+                    "data": null,
+                    "table_id": "JCtm",
+                    "table_name": "knowledge_base",
+                    "base_id": "86c87bae-5449-4748-9e91-5256f99ed66b"
+                  },
+                  {
+                      "id": "aYRZ",
+                      "key": "aYRZ",
+                      "name": "tags",
+                      "type": "multiple-select",
+                      "data": {
+                          "options": [
+                              {
+                                  "color": "#DAD7FF",
+                                  "description": "",
+                                  "id": "8M9P",
+                                  "name": "abc",
+                                  "text_color": "#212529"
+                              },
+                              {
+                                  "color": "#FFFCB5",
+                                  "description": "tag description",
+                                  "id": "v2zm",
+                                  "name": "tag name",
+                                  "text_color": "#212529"
+                              }
+                          ]
+                      },
+                      "table_id": "JCtm",
+                      "table_name": "knowledge_base",
+                      "base_id": "86c87bae-5449-4748-9e91-5256f99ed66b"
+                  },
+                  {
+                      "id": "9QtB",
+                      "key": "9QtB",
+                      "name": "creator",
+                      "type": "text",
+                      "data": null,
+                      "table_id": "JCtm",
+                      "table_name": "knowledge_base",
+                      "base_id": "86c87bae-5449-4748-9e91-5256f99ed66b"
+                  },
+                  {
+                      "id": "ZeHE",
+                      "key": "ZeHE",
+                      "name": "created_time",
+                      "type": "datetime",
+                      "data": null,
+                      "table_id": "JCtm",
+                      "table_name": "knowledge_base",
+                      "base_id": "86c87bae-5449-4748-9e91-5256f99ed66b"
+                  },
+                  {
+                    "id": "tMY2",
+                    "key": "tMY2",
+                    "name": "last_modifier",
+                    "type": "text",
+                    "data": null,
+                    "table_id": "JCtm",
+                    "table_name": "knowledge_base",
+                    "base_id": "86c87bae-5449-4748-9e91-5256f99ed66b"
+                  },
+                  {
+                    "id": "S927",
+                    "key": "S927",
+                    "name": "modified_time",
+                    "type": "datetime",
+                    "data": null,
+                    "table_id": "JCtm",
+                    "table_name": "knowledge_base",
+                    "base_id": "86c87bae-5449-4748-9e91-5256f99ed66b"
+                  }
+                ]
+              }
+        '403':
+          description: Permission denied
+        '404':
+          description: Tag not found
+
+    put:
+      tags:
+        - Knowledge base tags
+      summary: Update a knowledge base tag
+      description: Update an existing knowledge base tag.
+      security:
+        - AccountTokenAuth: []
+      parameters:
+        - $ref: '#/components/parameters/project_uuid'
+        - $ref: '#/components/parameters/tag_id'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: New tag name
+                color:
+                  type: string
+                  description: New background color
+                text_color:
+                  type: string
+                  description: New text color
+                description:
+                  type: string
+                  description: New description
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+        '400':
+          description: Bad Request
+        '403':
+          description: Permission denied
+        '404':
+          description: Tag not found
+
+    delete:
+      tags:
+        - Knowledge base tags
+      summary: Delete a knowledge base tag
+      description: Delete a specific knowledge base tag.
+      security:
+        - AccountTokenAuth: []
+      parameters:
+        - $ref: '#/components/parameters/project_uuid'
+        - $ref: '#/components/parameters/tag_id'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+        '403':
+          description: Permission denied
+        '404':
+          description: Tag not found
