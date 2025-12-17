@@ -3845,7 +3845,7 @@ paths:
           description: Project not found
 
   # ==================== Single Knowledge base ====================
-  /api/v2.1/project/{project_uuid}/knowledge-bases/knowledge_id/:
+  /api/v2.1/project/{project_uuid}/knowledge-bases/{knowledge_id}/:
     get:
       operationId: getKnowledgeBase
       tags:
