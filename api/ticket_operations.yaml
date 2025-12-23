@@ -656,7 +656,7 @@ components:
 
 paths:
   # ==================== Tickets ====================
-  /api/v2.1/project/{project_uuid}/tickets/:
+  /api/v1/project/{project_uuid}/tickets/:
     get:
       operationId: listTickets
       tags:
@@ -1090,7 +1090,7 @@ paths:
           description: Project not found
 
   # ==================== Single Ticket ====================
-  /api/v2.1/project/{project_uuid}/tickets/{ticket_id}/:
+  /api/v1/project/{project_uuid}/tickets/{ticket_id}/:
     get:
       operationId: getTicket
       tags:
@@ -1235,7 +1235,7 @@ paths:
         '404':
           description: Ticket not found
 
-  /api/v2.1/project/{project_uuid}/tickets/search/:
+  /api/v1/project/{project_uuid}/tickets/search/:
     get:
       operationId: searchTickets
       tags:
@@ -1270,7 +1270,7 @@ paths:
         '404':
           description: Project not found
 
-  /api/v2.1/project/{project_uuid}/my-tickets/:
+  /api/v1/project/{project_uuid}/my-tickets/:
     get:
       operationId: listMyTickets
       tags:
@@ -1481,7 +1481,7 @@ paths:
         '404':
           description: Project not found
 
-  /api/v2.1/project/{project_uuid}/ticket/metadata/:
+  /api/v1/project/{project_uuid}/ticket/metadata/:
     get:
       operationId: getTicketMetadata
       tags:
@@ -1592,7 +1592,7 @@ paths:
           description: Project not found
 
   # ==================== Ticket comments ====================
-  /api/v2.1/project/{project_uuid}/tickets/{ticket_id}/comments/:
+  /api/v1/project/{project_uuid}/tickets/{ticket_id}/comments/:
     get:
       operationId: listTicketComments
       tags:
@@ -1690,7 +1690,7 @@ paths:
         '429':
           description: Too many requests - Cannot be created again within 30 seconds
 
-  /api/v2.1/project/{project_uuid}/tickets/{ticket_id}/comments/{comment_id}/:
+  /api/v1/project/{project_uuid}/tickets/{ticket_id}/comments/{comment_id}/:
     put:
       operationId: updateTicketComment
       tags:
@@ -1770,7 +1770,7 @@ paths:
           description: Comment not found
 
   # ==================== Ticket Tags ====================
-  /api/v2.1/project/{project_uuid}/ticket/tags/:
+  /api/v1/project/{project_uuid}/ticket/tags/:
     get:
       operationId: listTicketTags
       tags:
@@ -1908,7 +1908,7 @@ paths:
         '404':
           description: Project not found
 
-  /api/v2.1/project/{project_uuid}/ticket/tags/{tag_id}/:
+  /api/v1/project/{project_uuid}/ticket/tags/{tag_id}/:
     get:
       tags:
         - Ticket tags
@@ -2260,7 +2260,7 @@ paths:
           description: Tag not found
 
   # ==================== Ticket Types ====================
-  /api/v2.1/project/{project_uuid}/ticket/types/:
+  /api/v1/project/{project_uuid}/ticket/types/:
     get:
       tags:
         - Ticket types
@@ -2389,7 +2389,7 @@ paths:
         '404':
           description: Project not found
 
-  /api/v2.1/project/{project_uuid}/ticket/types/{type_id}/:
+  /api/v1/project/{project_uuid}/ticket/types/{type_id}/:
     get:
       tags:
         - Ticket types
@@ -2738,7 +2738,7 @@ paths:
           description: Type not found
 
 # ==================== Ticket Substates ====================
-  /api/v2.1/project/{project_uuid}/ticket/substates/:
+  /api/v1/project/{project_uuid}/ticket/substates/:
     get:
       tags:
         - Ticket substates
@@ -2908,7 +2908,7 @@ paths:
           description: Project not found
 
 
-  /api/v2.1/project/{project_uuid}/ticket/substates/{substate_id}/:
+  /api/v1/project/{project_uuid}/ticket/substates/{substate_id}/:
     get:
       tags:
         - Ticket substates
@@ -3012,7 +3012,7 @@ paths:
 
 
   # ==================== Ticket Views ====================
-  /api/v2.1/project/{project_uuid}/ticket-views/:
+  /api/v1/project/{project_uuid}/ticket-views/:
     get:
       tags:
         - Ticket views
@@ -3217,7 +3217,7 @@ paths:
           description: Project not found
 
 
-  /api/v2.1/project/{project_uuid}/ticket-views/{view_id}/:
+  /api/v1/project/{project_uuid}/ticket-views/{view_id}/:
     get:
       tags:
         - Ticket views
@@ -3440,7 +3440,7 @@ paths:
 
 
   # ==================== Ticket View Operations ====================
-  /api/v2.1/project/{project_uuid}/ticket-move-views/:
+  /api/v1/project/{project_uuid}/ticket-move-views/:
     post:
       tags:
         - Ticket views
@@ -3508,7 +3508,7 @@ paths:
           description: View or folder not found
 
 
-  /api/v2.1/project/{project_uuid}/ticket-duplicate-view/:
+  /api/v1/project/{project_uuid}/ticket-duplicate-view/:
     post:
       tags:
         - Ticket views
@@ -3588,7 +3588,7 @@ paths:
           description: View not found
 
 # ==================== Knowledge bases ====================
-  /api/v2.1/project/{project_uuid}/knowledge-bases/:
+  /api/v1/project/{project_uuid}/knowledge-bases/:
     get:
       operationId: listKnowledgeBases
       tags:
@@ -3797,7 +3797,7 @@ paths:
         '404':
           description: Project not found
 
-  /api/v2.1/project/{project_uuid}/knowledge-base/metadata/:
+  /api/v1/project/{project_uuid}/knowledge-base/metadata/:
     get:
       operationId: getKnowledgeBaseMetadata
       tags:
@@ -3845,7 +3845,7 @@ paths:
           description: Project not found
 
   # ==================== Single Knowledge base ====================
-  /api/v2.1/project/{project_uuid}/knowledge-bases/{knowledge_id}/:
+  /api/v1/project/{project_uuid}/knowledge-bases/{knowledge_id}/:
     get:
       operationId: getKnowledgeBase
       tags:
@@ -3923,7 +3923,7 @@ paths:
           description: Project not found
 
   # ==================== Knowledge base Views ====================
-  /api/v2.1/project/{project_uuid}/knowledge-base-views/:
+  /api/v1/project/{project_uuid}/knowledge-base-views/:
     get:
       tags:
         - Knowledge base views
@@ -4041,7 +4041,7 @@ paths:
           description: Project not found
 
 
-  /api/v2.1/project/{project_uuid}/knowledge-base-views/{view_id}/:
+  /api/v1/project/{project_uuid}/knowledge-base-views/{view_id}/:
     get:
       tags:
         - Knowledge base views
@@ -4165,7 +4165,7 @@ paths:
 
 
   # ==================== Knowledge Base View Operations ====================
-  /api/v2.1/project/{project_uuid}/knowledge-base-move-views/:
+  /api/v1/project/{project_uuid}/knowledge-base-move-views/:
     post:
       tags:
         - Knowledge base views
@@ -4214,7 +4214,7 @@ paths:
           description: View or folder not found
 
 
-  /api/v2.1/project/{project_uuid}/knowledge-base-duplicate-view/:
+  /api/v1/project/{project_uuid}/knowledge-base-duplicate-view/:
     post:
       tags:
         - Knowledge base views
@@ -4269,7 +4269,7 @@ paths:
           description: View not found
 
   # ==================== Knowledge base Tags ====================
-  /api/v2.1/project/{project_uuid}/knowledge-base/tags/:
+  /api/v1/project/{project_uuid}/knowledge-base/tags/:
     get:
       operationId: listKnowledgeBaseTags
       tags:
@@ -4407,7 +4407,7 @@ paths:
         '404':
           description: Project not found
 
-  /api/v2.1/project/{project_uuid}/ticket/knowledge-base/{tag_id}/:
+  /api/v1/project/{project_uuid}/ticket/knowledge-base/{tag_id}/:
     get:
       tags:
         - Knowledge base tags
